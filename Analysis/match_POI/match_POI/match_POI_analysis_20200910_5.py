@@ -32,6 +32,10 @@ def dataPrePorcess(flag):
 
     # data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\data\\SHEVDC_0A101F56_vehicle_data.csv')
     data_didi_HEV = pd.read_excel('F:\Marquez\任务：Carsharing\新能源车辆数据中心\\BEV样本数据.xlsx')
+
+    '''数据按天拆分'''
+    '''...'''
+
     data_didi_HEV['lng_new'] = 0.000000
     data_didi_HEV['lat_new'] = 0.000000
 
