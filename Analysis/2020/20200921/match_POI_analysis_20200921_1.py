@@ -6,9 +6,10 @@ import sys
 import datetime
 sys.path.append(r"C:\Users\admin\PycharmProjects\pythonProject\20200910\match_POI\match_POI")
 import coord_transfer
-
-'''@Author Hou Jue  2020-09-10
-  '''
+import math
+pi = 3.1415926535897932384626  # π
+'''@Author Hou Jue
+   20200910'''
 
 
 def dataPrePorcess(flag,data_byDay):
@@ -38,6 +39,61 @@ def dataPrePorcess(flag,data_byDay):
 
     # return  data_didi_HEV
     return  data_didi_HEV
+
+
+def out_of_china(lng, lat):
+    """
+    判断是否在国内，不在国内不做偏移
+    :param lng:
+    :param lat:
+    :return:
+    """
+    return not (lng > 73.66 and lng < 135.05 and lat > 3.86 and lat < 53.55)
+
+def _transformlat(lng, lat):
+    ret = -100.0 + 2.0 * lng + 3.0 * lat + 0.2 * lat * lat + \
+          0.1 * lng * lat + 0.2 * math.sqrt(math.fabs(lng))
+    ret += (20.0 * math.sin(6.0 * lng * pi) + 20.0 *
+            math.sin(2.0 * lng * pi)) * 2.0 / 3.0
+    ret += (20.0 * math.sin(lat * pi) + 40.0 *
+            math.sin(lat / 3.0 * pi)) * 2.0 / 3.0
+    ret += (160.0 * math.sin(lat / 12.0 * pi) + 320 *
+            math.sin(lat * pi / 30.0)) * 2.0 / 3.0
+    return ret
+
+def _transformlng(lng, lat):
+    ret = 300.0 + lng + 2.0 * lat + 0.1 * lng * lng + \
+          0.1 * lng * lat + 0.1 * math.sqrt(math.fabs(lng))
+    ret += (20.0 * math.sin(6.0 * lng * pi) + 20.0 *
+            math.sin(2.0 * lng * pi)) * 2.0 / 3.0
+    ret += (20.0 * math.sin(lng * pi) + 40.0 *
+            math.sin(lng / 3.0 * pi)) * 2.0 / 3.0
+    ret += (150.0 * math.sin(lng / 12.0 * pi) + 300.0 *
+            math.sin(lng / 30.0 * pi)) * 2.0 / 3.0
+    return ret
+
+
+def wgs84_to_gcj02(lng, lat):   #NO
+    """
+    WGS84转GCJ02(火星坐标系)
+    :param lng:WGS84坐标系的经度
+    :param lat:WGS84坐标系的纬度
+    :return:
+    """
+    if out_of_china(lng, lat):  # 判断是否在国内
+        return [lng, lat]
+    dlat = _transformlat(lng - 105.0, lat - 35.0)
+    dlng = _transformlng(lng - 105.0, lat - 35.0)
+    radlat = lat / 180.0 * pi
+    magic = math.sin(radlat)
+    magic = 1 - ee * magic * magic
+    sqrtmagic = math.sqrt(magic)
+    dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * pi)
+    dlng = (dlng * 180.0) / (a / sqrtmagic * math.cos(radlat) * pi)
+    mglat = lat + dlat
+    mglng = lng + dlng
+    return [mglng, mglat]
+
 
 
 def divideDay(day):
@@ -146,6 +202,9 @@ def matchPOI(data_byDay):
     # data_didi_HEV=dataPrePorcess()
     flag=0
     data_didi_HEV = dataPrePorcess(flag,data_byDay)
+
+
+    # data_didi_HEV=pd.read_csv('F:\\sql data\\classifer_car_data\\example\\SHEVDC_0A101F56_vehicle_position.csv')
     data_didi_HEV_location=pd.concat([data_didi_HEV['lat_new'],data_didi_HEV['lng_new']],axis=1)
 
     '''airport'''
@@ -169,10 +228,16 @@ def matchPOI(data_byDay):
 
 if __name__ == '__main__':
     starttime = datetime.datetime.now()
+    # list_day=list(lambda x: x for i in range(30))
 
     days=['2019-09-01','2019-09-02','2019-09-03','2019-09-04','2019-09-05','2019-09-06','2019-09-07','2019-09-08']
+    # days=['2019-09-04','2019-09-05','2019-09-06','2019-09-07','2019-09-08']
+
+    # days = ['2019-09-05','2019-09-06', '2019-09-07', '2019-09-08']
+    # day='2019-09-03'
     for day in days:
         data_byDay=divideDay(day)
+        # match_points_airport,match_points_railway=matchPOI()
         match_points_airport,match_points_railway=matchPOI(data_byDay)
         print('{}'.format(day))
         print('match_points_airport:{}\nmatch_points_railway_station:{}'.format(match_points_airport,match_points_railway))
@@ -180,6 +245,9 @@ if __name__ == '__main__':
 
         print('CPU time(s):',(endtime - starttime).seconds)
         print('---------------------------------')
+        # result=pd.DataFrame([match_points_airport,match_points_railway])
+        # result.to_csv('C:\\Users\\admin\\PycharmProjects\\pythonProject\\20200910\\'
+        #               'match_POI\\result\\result_SHEVDC_1A5H2N7C.csv')
 
 
 

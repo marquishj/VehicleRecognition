@@ -150,15 +150,18 @@ x_train, x_test, y_train, y_test = train_test_split(vehicle_feature, vehicle_lab
 '''增加一维POI匹配的特征向量'''
 '''随机森林和Adaboost XGboost'''
 
+
+
+
 '''SVM'''
 from sklearn import svm
 svm_classifier = svm.SVC(C=1.0, kernel='rbf', decision_function_shape='ovr', gamma=0.01)
 # svm_classifier.fit(X_train, Y_train)
 svm_classifier.fit(all_data_train, target_train)
 
-print("训练集:", svm_classifier.score(x_train, y_train))
+print("SVM-训练集:", svm_classifier.score(x_train, y_train))
 # print("训练集:", svm_classifier.score(all_data_train, target_train))
-print("测试集:", svm_classifier.score(x_test, y_test))
+print("SVM-测试集:", svm_classifier.score(x_test, y_test))
 # print("测试集:", svm_classifier.score(all_data_test, target_test))
 
 
@@ -187,7 +190,7 @@ y_pred=model.predict(x_test)
 predictions=[round(value) for value in y_pred]
 
 accuracy=accuracy_score(y_test,predictions)
-print('Accuracy:%.2f%%' % (accuracy*100.0))
+print('XGboost Accuracy:%.2f%%' % (accuracy*100.0))
 
 
 '''-----------------------KNN-----------------------'''
@@ -214,26 +217,26 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 # x_train, x_test, y_train, y_test = train_test_split(iris.data, iris.target, random_state=22)
 
 # 3）特征工程：标准化
-# transfer = StandardScaler()
-# x_train = transfer.fit_transform(x_train)
-# x_test = transfer.transform(x_test)
-# print("特征工程：x_train:\n", x_train)
-# print("特征工程：x_test:\n", x_test)
-#
-#
-# # 4）KNN算法预估器
-# estimator = KNeighborsClassifier(n_neighbors=3)
-# estimator.fit(x_train, y_train)
-#
-# # 5）模型评估
-# # 方法1：直接比对真实值和预测值
-# y_predict = estimator.predict(x_test)
-# print("y_predict:\n", y_predict)
-# print("直接比对真实值和预测值:\n", y_test == y_predict)
-#
-# # 方法2：计算准确率
-# score = estimator.score(x_test, y_test)
-# print("准确率为：\n", score)
+transfer = StandardScaler()
+x_train = transfer.fit_transform(x_train)
+x_test = transfer.transform(x_test)
+print("特征工程：x_train:\n", x_train)
+print("特征工程：x_test:\n", x_test)
+
+
+# 4）KNN算法预估器
+estimator = KNeighborsClassifier(n_neighbors=3)
+estimator.fit(x_train, y_train)
+
+# 5）模型评估
+# 方法1：直接比对真实值和预测值
+y_predict = estimator.predict(x_test)
+print("y_predict:\n", y_predict)
+print("直接比对真实值和预测值:\n", y_test == y_predict)
+
+# 方法2：计算准确率
+score = estimator.score(x_test, y_test)
+print("KNN准确率为：\n", score)
 
 
 '''-----------------KNN++----------------'''
@@ -280,16 +283,16 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 # 4）朴素贝叶斯算法预估器流程
 # estimator = MultinomialNB()
 # estimator.fit(x_train, y_train)
-
-# 5）模型评估
-# 方法1：直接比对真实值和预测值
+#
+# # 5）模型评估
+# # 方法1：直接比对真实值和预测值
 # y_predict = estimator.predict(x_test)
 # print("y_predict:\n", y_predict)
 # print("直接比对真实值和预测值:\n", y_test == y_predict)
 #
 # # 方法2：计算准确率
 # score = estimator.score(x_test, y_test)
-# print("准确率为：\n", score)
+# print("Naive Bayers准确率为：\n", score)
 
 
 '''--------------决策树-----------------'''
@@ -304,7 +307,7 @@ print("直接比对真实值和预测值:\n", y_test == y_predict)
 
 # 方法2：计算准确率
 score = estimator.score(x_test, y_test)
-print("准确率为：\n", score)
+print("Decision Tree 准确率为：\n", score)
 
 # 可视化决策树
 # export_graphviz(estimator, out_file="iris_tree.dot", feature_names=iris.feature_names)

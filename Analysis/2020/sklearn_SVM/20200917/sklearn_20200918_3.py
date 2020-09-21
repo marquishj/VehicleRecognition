@@ -128,7 +128,7 @@ all_data_test = np.array(all_data_test).T
 '''target_train需要转换格式'''
 
 # target_train = np.array(target_train).reshape(-1, 1)
-clf.fit(all_data_train, target_train)  # 二维数据和一
+# clf.fit(all_data_train, target_train)  # 二维数据和一
 
 # 划分
 
@@ -148,7 +148,7 @@ vehicle_label=np.hstack((np_target_test,np_target_train))
 x_train, x_test, y_train, y_test = train_test_split(vehicle_feature, vehicle_label, test_size=0.3, random_state=42)
 
 '''增加一维POI匹配的特征向量'''
-'''随机森林和Adaboost XGboost'''
+
 
 '''SVM'''
 from sklearn import svm
@@ -156,9 +156,9 @@ svm_classifier = svm.SVC(C=1.0, kernel='rbf', decision_function_shape='ovr', gam
 # svm_classifier.fit(X_train, Y_train)
 svm_classifier.fit(all_data_train, target_train)
 
-print("训练集:", svm_classifier.score(x_train, y_train))
+print("SVM train Accuracy:\n", svm_classifier.score(x_train, y_train))
 # print("训练集:", svm_classifier.score(all_data_train, target_train))
-print("测试集:", svm_classifier.score(x_test, y_test))
+print("SVM test Accuracy:\n", svm_classifier.score(x_test, y_test))
 # print("测试集:", svm_classifier.score(all_data_test, target_test))
 
 
@@ -168,12 +168,6 @@ from xgboost import XGBClassifier
 from numpy import loadtxt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-
-
-# dataset=loadtxt('F:\PycharmProjects\ACM\(Bili)XGboost\data\pima-indians-diabetes.csv',delimiter=',')
-#
-# X=dataset[:,0:8]
-# Y=dataset[:,8]
 
 seed=7
 test_size=0.33
@@ -187,7 +181,7 @@ y_pred=model.predict(x_test)
 predictions=[round(value) for value in y_pred]
 
 accuracy=accuracy_score(y_test,predictions)
-print('Accuracy:%.2f%%' % (accuracy*100.0))
+print('XGboost Accuracy:%.2f%% \n' % (accuracy*100.0))
 
 
 '''-----------------------KNN-----------------------'''
@@ -201,12 +195,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
-
-
-"""
-用KNN算法对鸢尾花进行分类
-:return:
-"""
 # 1）获取数据
 
 
@@ -214,26 +202,25 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 # x_train, x_test, y_train, y_test = train_test_split(iris.data, iris.target, random_state=22)
 
 # 3）特征工程：标准化
-# transfer = StandardScaler()
-# x_train = transfer.fit_transform(x_train)
-# x_test = transfer.transform(x_test)
+transfer = StandardScaler()
+x_train = transfer.fit_transform(x_train)
+x_test = transfer.transform(x_test)
 # print("特征工程：x_train:\n", x_train)
 # print("特征工程：x_test:\n", x_test)
-#
-#
-# # 4）KNN算法预估器
-# estimator = KNeighborsClassifier(n_neighbors=3)
-# estimator.fit(x_train, y_train)
-#
-# # 5）模型评估
-# # 方法1：直接比对真实值和预测值
-# y_predict = estimator.predict(x_test)
+
+# 4）KNN算法预估器
+estimator = KNeighborsClassifier(n_neighbors=3)
+estimator.fit(x_train, y_train)
+
+# 5）模型评估
+# 方法1：直接比对真实值和预测值
+y_predict = estimator.predict(x_test)
 # print("y_predict:\n", y_predict)
 # print("直接比对真实值和预测值:\n", y_test == y_predict)
-#
-# # 方法2：计算准确率
-# score = estimator.score(x_test, y_test)
-# print("准确率为：\n", score)
+
+# 方法2：计算准确率
+score = estimator.score(x_test, y_test)
+print("KNN Accuracy：\n", score)
 
 
 '''-----------------KNN++----------------'''
@@ -280,16 +267,16 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 # 4）朴素贝叶斯算法预估器流程
 # estimator = MultinomialNB()
 # estimator.fit(x_train, y_train)
-
-# 5）模型评估
-# 方法1：直接比对真实值和预测值
+#
+# # 5）模型评估
+# # 方法1：直接比对真实值和预测值
 # y_predict = estimator.predict(x_test)
 # print("y_predict:\n", y_predict)
 # print("直接比对真实值和预测值:\n", y_test == y_predict)
 #
 # # 方法2：计算准确率
-# score = estimator.score(x_test, y_test)
-# print("准确率为：\n", score)
+# score = estimator.score(x_test, y_test)`
+# print("Naive Bayers准确率为：\n", score)
 
 
 '''--------------决策树-----------------'''
@@ -299,12 +286,12 @@ estimator.fit(x_train, y_train)
 # 4）模型评估
 # 方法1：直接比对真实值和预测值
 y_predict = estimator.predict(x_test)
-print("y_predict:\n", y_predict)
-print("直接比对真实值和预测值:\n", y_test == y_predict)
+# print("y_predict:\n", y_predict)
+# print("直接比对真实值和预测值:\n", y_test == y_predict)
 
 # 方法2：计算准确率
 score = estimator.score(x_test, y_test)
-print("准确率为：\n", score)
-
+print("Decision Tree Accuracy：\n", score)
+end=1
 # 可视化决策树
 # export_graphviz(estimator, out_file="iris_tree.dot", feature_names=iris.feature_names)
