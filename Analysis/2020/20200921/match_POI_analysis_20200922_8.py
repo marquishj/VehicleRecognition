@@ -40,10 +40,11 @@ class trajectoryAnalysis():
             didi_list = os.listdir("F:\\sql data\\classifer_car_data\\example\\vehicle\\")
             # taxi_list = os.listdir("D:\\data\\出租车\\")
 
-
             ''' didi-EV'''
             for didi_id in range(len(didi_list)):
                 # data_didi_HEV = pd.read_csv('D:\\data\\网约车\\' + didi_list)
+                '''这里已经是一个循环了 didi_list[didi_id]
+                   分别取出车辆ID'''
                 data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + didi_list[didi_id])
                 data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
 
@@ -54,6 +55,11 @@ class trajectoryAnalysis():
         for i in range(data_didi_HEV.index.tolist()[0],data_didi_HEV.index.tolist()[-1]):
             data_didi_HEV['lng_new'][i] = self.transfer(data_didi_HEV['longitude'][i], data_didi_HEV['latitude'][i])[0]
             data_didi_HEV['lat_new'][i] = self.transfer(data_didi_HEV['longitude'][i], data_didi_HEV['latitude'][i])[1]
+
+        '''应该生成excel保存'''
+        data_didi_HEV.to_csv()
+
+
 
         return  data_didi_HEV
 
@@ -107,6 +113,7 @@ class trajectoryAnalysis():
         # data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\SHEVDC_0A101F56_vehicle_position.csv') #输入车辆名称的文件名
         flag = 1
         data_byDay=0
+        '''感觉这里要循环处理？分别计算文件夹里的表格文件'''
         data_didi_HEV = self.dataPrePorcess(flag,data_byDay)#输入车辆名称的文件名
         data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
 
@@ -187,7 +194,7 @@ class trajectoryAnalysis():
     def matchPOI(self,data_byDay):
 
         airport_location, railway_location=self.POIPorcess()
-        flag=1
+        flag=0
         data_didi_HEV = self.dataPrePorcess(flag,data_byDay)
         data_didi_HEV_location=pd.concat([data_didi_HEV['lat_new'],data_didi_HEV['lng_new']],axis=1)
 
