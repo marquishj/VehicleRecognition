@@ -31,7 +31,7 @@ class trajectoryAnalysis():
     def __init__(self):
         pass
 
-    def dataPreProcess(self,flag,data_byDay):
+    def dataPrePorcess(self,flag,data_byDay):
 
         if flag==1:
             # pcev_list = os.listdir("D:\\data\\私家车\\纯电\\")
@@ -96,37 +96,39 @@ class trajectoryAnalysis():
         mglng = lng + dlng
         return [mglng, mglat]
 
-    def divideDay(self,day):
-
-
-
-        '''在这里修改车型'''
-        # data_didi_HEV = pd.read_csv('D:\\data\\出租车\\SHEVDC_1A5H2N7C.csv')
-        '''didi'''
-        # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\\pick_vehicle\\didi\\SHEVDC_546B660B.csv')
-        '''pc_ev'''
-        # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\\pick_vehicle\\pc_ev\\SHEVDC_3M4S302G.csv')
-        '''pc_hev'''
-        # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\`\pick_vehicle\\pc_hev\\SHEVDC_4L10316B.csv')
-        '''taxi'''
-        # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\\pick_vehicle\\taxi\\SHEVDC_341O5511.csv') #输入车辆名称的文件名
-        # data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\SHEVDC_0A101F56_vehicle_position.csv') #输入车辆名称的文件名
-        flag = 1
-        data_byDay=0
-        '''感觉这里要循环处理？分别计算文件夹里的表格文件'''
-        data_didi_HEV = self.dataPrePorcess(flag,data_byDay)#输入车辆名称的文件名
-
-
-        data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
-
-        days = str(data_didi_HEV['datatime'])
-        if day in days:
-            data_byDay_index=data_didi_HEV[data_didi_HEV.loc[:, 'datatime']== pd.to_datetime(day)].index.tolist()
-            data_byDay=data_didi_HEV.loc[data_byDay_index,:]
-        else:
-            data_byDay=pd.DataFrame([np.nan,np.nan],columns=['datatime'])
-
-        return data_byDay,data_didi_HEV
+    # def divideDay(self,day):
+    #
+    #     # didi_list = os.listdir("F:\\sql data\\classifer_car_data\\example\\vehicle\\")
+    #     # # taxi_list = os.listdir("D:\\data\\出租车\\")
+    #     #
+    #     # ''' didi-EV'''
+    #     # for didi_id in range(len(didi_list)):
+    #     #     # data_didi_HEV = pd.read_csv('D:\\data\\网约车\\' + didi_list)
+    #     #     '''这里已经是一个循环了 didi_list[didi_id]
+    #     #        分别取出车辆ID'''
+    #     #     data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + didi_list[didi_id])
+    #     #     data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
+    #     #     print("Vehicle ID: {}".format(didi_list[didi_id]))
+    #     #
+    #     #     # data_didi_HEV=data_byDay
+    #     #     data_didi_HEV['lng_new'] = 0.000000
+    #     #     data_didi_HEV['lat_new'] = 0.000000
+    #
+    #     for i in range(data_didi_HEV.index.tolist()[0], data_didi_HEV.index.tolist()[-1]):
+    #         data_didi_HEV['lng_new'][i] = \
+    #         self.transfer(data_didi_HEV['longitude'][i], data_didi_HEV['latitude'][i])[0]
+    #         data_didi_HEV['lat_new'][i] = \
+    #         self.transfer(data_didi_HEV['longitude'][i], data_didi_HEV['latitude'][i])[1]
+    #
+    #
+    #     days = str(data_didi_HEV['datatime'])
+    #     if day in days:
+    #         data_byDay_index=data_didi_HEV[data_didi_HEV.loc[:, 'datatime']== pd.to_datetime(day)].index.tolist()
+    #         data_byDay=data_didi_HEV.loc[data_byDay_index,:]
+    #     else:
+    #         data_byDay=pd.DataFrame([np.nan,np.nan],columns=['datatime'])
+    #
+    #     return data_byDay,data_didi_HEV
 
     def clusterAnalysis(self,days):
         print('--------------ClusterAnalysis  Start-----------------')
@@ -193,11 +195,13 @@ class trajectoryAnalysis():
 
         return airport_location_done,railway_location_done
 
-    def matchPOI(self,data_byDay):
+    # def matchPOI(self,data_byDay,day):
+    def matchPOI(self,data_byDay,data_didi_HEV):
 
         airport_location, railway_location=self.POIPorcess()
-        flag=0
-        data_didi_HEV = self.dataPreProcess(flag,data_byDay)
+
+        # data_didi_HEV = self.dataPrePorcess(flag,data_byDay)
+        # data_byDay,data_didi_HEV = self.divideDay(day)
         data_didi_HEV_location=pd.concat([data_didi_HEV['lat_new'],data_didi_HEV['lng_new']],axis=1)
 
         '''airport'''
@@ -220,20 +224,54 @@ class trajectoryAnalysis():
 
     def POIAnalysis(self,days):
         starttime = datetime.datetime.now()
-        print('--------------POIAnalysis  Start-----------------')
-        for day in days:
-            data_byDay,data_didi_HEV = self.divideDay(day)
-            if pd.isnull(data_byDay['datatime']).iloc[0] == True:
-                print("{}\nCannot find this day from datasets.".format(day))
-                print('---------------------------------')
-            else:
-                match_points_airport, match_points_railway = self.matchPOI(data_byDay)
-                print('{}'.format(day))
-                print('match_points_airport:{}\nmatch_points_railway_station:{}'.format(match_points_airport,
-                                                                                        match_points_railway))
-                endtime = datetime.datetime.now()
-                print('CPU time(s):', (endtime - starttime).seconds)
-                print('---------------------------------')
+
+        didi_list = os.listdir("F:\\sql data\\classifer_car_data\\example\\vehicle\\")
+        # taxi_list = os.listdir("D:\\data\\出租车\\")
+
+        ''' didi-EV'''
+        for didi_id in range(len(didi_list)):
+            print("Vehicle ID: {}".format(didi_list[didi_id]))
+            # data_didi_HEV = pd.read_csv('D:\\data\\网约车\\' + didi_list)
+            '''这里已经是一个循环了 didi_list[didi_id]
+               分别取出车辆ID'''
+            data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + didi_list[didi_id])
+            data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
+            # data_didi_HEV=data_byDay
+            data_didi_HEV['lng_new'] = 0.000000
+            data_didi_HEV['lat_new'] = 0.000000
+
+            for i in range(data_didi_HEV.index.tolist()[0], data_didi_HEV.index.tolist()[-1]):
+                data_didi_HEV['lng_new'][i] = \
+                    self.transfer(data_didi_HEV['longitude'][i], data_didi_HEV['latitude'][i])[0]
+                data_didi_HEV['lat_new'][i] = \
+                    self.transfer(data_didi_HEV['longitude'][i], data_didi_HEV['latitude'][i])[1]
+                data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
+
+            # days = str(data_didi_HEV['datatime'])
+            days = data_didi_HEV['datatime']
+            for day in days:
+                if day in days:
+                    data_byDay_index = data_didi_HEV[data_didi_HEV.loc[:, 'datatime'] == pd.to_datetime(day)].index.tolist()
+                    data_byDay = data_didi_HEV.loc[data_byDay_index, :]
+                else:
+                    data_byDay = pd.DataFrame([np.nan, np.nan], columns=['datatime'])
+
+                # return data_byDay, data_didi_HEV
+
+                print('--------------POIAnalysis  Start-----------------')
+                for day in days:
+                    # data_byDay,data_didi_HEV = self.divideDay(day)
+                    if pd.isnull(data_byDay['datatime']).iloc[0] == True:
+                        print("{}\nCannot find this day from datasets.".format(day))
+                        print('---------------------------------')
+                    else:
+                        match_points_airport, match_points_railway = self.matchPOI(data_byDay,data_didi_HEV)
+                        print('{}'.format(day))
+                        print('match_points_airport:{}\nmatch_points_railway_station:{}'.format(match_points_airport,
+                                                                                                match_points_railway))
+                        endtime = datetime.datetime.now()
+                        print('CPU time(s):', (endtime - starttime).seconds)
+                        print('---------------------------------')
         print('--------------POIAnalysis  Finish-----------------')
 
 if __name__ == '__main__':
@@ -247,9 +285,9 @@ if __name__ == '__main__':
     traAnalysis.POIAnalysis(days)
 
     '''2-处理轨迹聚类'''
-    traAnalysis.clusterAnalysis(days)
+    # traAnalysis.clusterAnalysis(days)
 
 
     path = os.path.abspath(os.path.dirname(__file__))
     type = sys.getfilesystemencoding()
-    sys.stdout = Logger('F:\\sql data\\classifer_car_data\\log.txt')
+    sys.stdout = Logger('F:\\sql data\\classifer_car_data\\result.txt')
