@@ -124,5 +124,5 @@ num_clusters = len(set(cluster_labels) - set([-1]))
 # print( 'Clustered ' + str(len(df_min)) + ' points to ' + str(num_clusters) + ' clusters')
 print( 'Clustered ' + str(len(coords)) + ' points to ' + str(num_clusters) + ' clusters')
 # turn the clusters in to a pandas series
-clusters = pd.Series([coords[cluster_labels == n] for n in range(num_clusters)])
-print(clusters)
+# clusters = pd.Series([coords[cluster_labels == n] for n in range(num_clusters)])
+# print(clusters)

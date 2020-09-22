@@ -1,0 +1,99 @@
+2018-01-06
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 8
+---------------------------------
+2018-01-07
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 22
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+2018-01-06
+Clustered 673 points to 5 clusters
+---------------------------------
+2018-01-07
+Clustered 1048 points to 7 clusters
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+----------POIAnalysis  Start-----------------
+2018-01-06
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 9
+---------------------------------
+2018-01-07
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 22
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+----------POIAnalysis  Finish-----------------
+----------clusterAnalysis  Start-----------------
+2018-01-06
+Clustered 673 points to 5 clusters
+---------------------------------
+2018-01-07
+Clustered 1048 points to 7 clusters
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+----------POIAnalysis  Start-----------------
+2018-01-06
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 9
+---------------------------------
+2018-01-07
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 24
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+----------POIAnalysis  Finish-----------------
+----------clusterAnalysis  Start-----------------
+2018-01-06
+Clustered 673 points to 5 clusters
+---------------------------------
+2018-01-07
+Clustered 1048 points to 7 clusters
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+----------clusterAnalysis  Finish-----------------
+--------------POIAnalysis  Start-----------------
+2018-01-06
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 9
+---------------------------------
+2018-01-07
+match_points_airport:0
+match_points_railway_station:0
+CPU time(s): 24
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+--------------POIAnalysis  Finish-----------------
+--------------ClusterAnalysis  Start-----------------
+2018-01-06
+Clustered 673 points to 5 clusters
+---------------------------------
+2018-01-07
+Clustered 1048 points to 7 clusters
+---------------------------------
+2018-01-08
+Cannot find this day from datasets.
+---------------------------------
+---------------ClusterAnalysis  Finish-----------------
