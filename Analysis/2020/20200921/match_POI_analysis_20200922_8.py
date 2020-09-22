@@ -34,17 +34,20 @@ class trajectoryAnalysis():
     def dataPrePorcess(self,flag,data_byDay):
 
         if flag==1:
-            pcev_list = os.listdir("D:\\data\\私家车\\纯电\\")
-            pcphev_list= os.listdir("D:\\data\\私家车\\混动\\")
-            didi_list = os.listdir("D:\\data\\网约车\\")
-            taxi_list = os.listdir("D:\\data\\出租车\\")
+            # pcev_list = os.listdir("D:\\data\\私家车\\纯电\\")
+            # pcphev_list= os.listdir("D:\\data\\私家车\\混动\\")
+            # didi_list = os.listdir("D:\\data\\网约车\\")
+            didi_list = os.listdir("F:\\sql data\\classifer_car_data\\example\\vehicle\\")
+            # taxi_list = os.listdir("D:\\data\\出租车\\")
+
 
             ''' didi-EV'''
-            for didi_id in didi_list:
-                data_didi_HEV = pd.read_csv('D:\\data\\网约车\\' + didi_list)
-                data_didi_HEV['time'] = pd.to_datetime(data_didi_HEV['time']).apply(lambda x: x.date())
+            for didi_id in range(len(didi_list)):
+                # data_didi_HEV = pd.read_csv('D:\\data\\网约车\\' + didi_list)
+                data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + didi_list[didi_id])
+                data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
 
-        data_didi_HEV=data_byDay
+        # data_didi_HEV=data_byDay
         data_didi_HEV['lng_new'] = 0.000000
         data_didi_HEV['lat_new'] = 0.000000
 
@@ -98,10 +101,13 @@ class trajectoryAnalysis():
         '''pc_ev'''
         # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\\pick_vehicle\\pc_ev\\SHEVDC_3M4S302G.csv')
         '''pc_hev'''
-        # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\\pick_vehicle\\pc_hev\\SHEVDC_4L10316B.csv')
+        # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\`\pick_vehicle\\pc_hev\\SHEVDC_4L10316B.csv')
         '''taxi'''
         # data_didi_HEV = pd.read_csv('D:\\2020.09.10\\HJ\\pick_vehicle\\taxi\\SHEVDC_341O5511.csv') #输入车辆名称的文件名
-        data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\SHEVDC_0A101F56_vehicle_position.csv') #输入车辆名称的文件名
+        # data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\SHEVDC_0A101F56_vehicle_position.csv') #输入车辆名称的文件名
+        flag = 1
+        data_byDay=0
+        data_didi_HEV = self.dataPrePorcess(flag,data_byDay)#输入车辆名称的文件名
         data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
 
         days = str(data_didi_HEV['datatime'])
@@ -181,7 +187,7 @@ class trajectoryAnalysis():
     def matchPOI(self,data_byDay):
 
         airport_location, railway_location=self.POIPorcess()
-        flag=0
+        flag=1
         data_didi_HEV = self.dataPrePorcess(flag,data_byDay)
         data_didi_HEV_location=pd.concat([data_didi_HEV['lat_new'],data_didi_HEV['lng_new']],axis=1)
 
@@ -198,7 +204,7 @@ class trajectoryAnalysis():
         for i in range(railway_location.shape[0]):
             for j in range(data_didi_HEV_location.index[0],data_didi_HEV_location.index[-1]):
                 if (data_didi_HEV_location.loc[j,'lat_new'].round(decimals=2)==railway_location.loc[i,'latitude'].round(decimals=2))\
-                        and (data_didi_HEV_location.loc[j,'lng_new'].round(decimals=2)==railway_location.loc[i,'longitude'].round(decimals=3)):
+                        and (data_didi_HEV_location.loc[j,'lng_new'].round(decimals=2)==railway_location.loc[i,'longitude'].round(decimals=2)):
                     match_points_railway+=1
 
         return match_points_airport,match_points_railway
@@ -227,9 +233,9 @@ if __name__ == '__main__':
     traAnalysis = trajectoryAnalysis()
     '''根据分析需要选择功能'''
     '''1-处理轨迹匹配POI'''
-    # path = os.path.abspath(os.path.dirname(__file__))
-    # type = sys.getfilesystemencoding()
-    # sys.stdout = Logger('log.txt')
+    path = os.path.abspath(os.path.dirname(__file__))
+    type = sys.getfilesystemencoding()
+    sys.stdout = Logger('F:\\sql data\\classifer_car_data\\log.txt')
 
     traAnalysis.POIAnalysis(days)
 
