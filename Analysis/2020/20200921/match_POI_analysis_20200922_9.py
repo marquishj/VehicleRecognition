@@ -234,7 +234,12 @@ class trajectoryAnalysis():
             # data_didi_HEV = pd.read_csv('D:\\data\\网约车\\' + didi_list)
             '''这里已经是一个循环了 didi_list[didi_id]
                分别取出车辆ID'''
+
             data_didi_HEV = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + didi_list[didi_id])
+            '''Jiang Lizhi's idea'''
+            column_name = data_didi_HEV.columns[0]
+            if column_name == "time":
+                data_didi_HEV['datatime'] = data_didi_HEV['time']
             data_didi_HEV['datatime'] = pd.to_datetime(data_didi_HEV['datatime']).apply(lambda x: x.date())
             # data_didi_HEV=data_byDay
             data_didi_HEV['lng_new'] = 0.000000
@@ -290,4 +295,4 @@ if __name__ == '__main__':
 
     path = os.path.abspath(os.path.dirname(__file__))
     type = sys.getfilesystemencoding()
-    sys.stdout = Logger('F:\\sql data\\classifer_car_data\\result.txt')
+    sys.stdout = Logger('F:\\sql data\\classifer_car_data\\result-202010014.txt')

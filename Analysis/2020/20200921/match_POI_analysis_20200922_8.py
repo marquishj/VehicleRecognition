@@ -252,4 +252,4 @@ if __name__ == '__main__':
 
     path = os.path.abspath(os.path.dirname(__file__))
     type = sys.getfilesystemencoding()
-    sys.stdout = Logger('F:\\sql data\\classifer_car_data\\log.txt')
+    sys.stdout = Logger('F:\\sql data\\classifer_car_data\\log-20201014.txt')

@@ -179,7 +179,6 @@ class trajectoryAnalysis():
                       and ((data_vehicle_location.loc[j, 'lng_new'].round(decimals=3)+0.004 >= railway_location.loc[i, 'longitude'].round(decimals=3))\
                       and (data_vehicle_location.loc[j, 'lng_new'].round(decimals=3)-0.004 <= railway_location.loc[i, 'longitude'].round(decimals=3))):
                         match_points_railway+=1
-
         elif radius==0.1:
              # airport
              match_points_airport = 0

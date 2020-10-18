@@ -62,7 +62,6 @@ class trajectoryAnalysis():
                 math.sin(lng / 30.0 * pi)) * 2.0 / 3.0
         return ret
 
-    '''500m'''
     def transfer(self,lng, lat):
         dlat = self._transformlat(lng - 105.0, lat - 35.0)
         dlng = self._transformlng(lng - 105.0, lat - 35.0)
@@ -74,15 +73,10 @@ class trajectoryAnalysis():
         dlng = (dlng * 180.0) / (a / sqrtmagic * math.cos(radlat) * pi)
         mglat = lat + dlat
         mglng = lng + dlng
-        # '''500m'''
-        # mglng+=0.0048
-
         return [mglng, mglat]
 
     def divideDay(self,day):
-        # didi_list = os.listdir("F:\\sql data\\classifer_car_data\\example\\vehicle\\")
         for didi_id in range(len(self.didi_list)):
-            # data_vehicle = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + self.didi_list[didi_id])
             data_vehicle = pd.read_csv(self.file_path + self.didi_list[didi_id])
             data_vehicle['datatime'] = pd.to_datetime(data_vehicle['datatime']).apply(lambda x: x.date())
             days = str(data_vehicle['datatime'])
@@ -94,11 +88,9 @@ class trajectoryAnalysis():
             return data_byDay,data_vehicle
 
     def clusterAnalysis(self,para):
-
         print('--------------ClusterAnalysis  Start-----------------')
         for didi_id in range(len(self.didi_list)):
             print("Vehicle ID: {}".format(self.didi_list[didi_id]))
-            # data_vehicle = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + didi_list[didi_id])
             data_vehicle = pd.read_csv(self.file_path+ self.didi_list[didi_id])
             data_vehicle['datatime'] = pd.to_datetime(data_vehicle['datatime']).apply(lambda x: x.date())
             for day in days:
@@ -150,6 +142,7 @@ class trajectoryAnalysis():
         data_vehicle_location=pd.concat([data_vehicle['lat_new'],data_vehicle['lng_new']],axis=1)
         '''airport'''
         if radius == 1:
+            # airport
             match_points_airport = 0
             for i in range(airport_location.shape[0]):
                 for j in range(data_vehicle_location.index[0], data_vehicle_location.index[-1]):
@@ -158,7 +151,8 @@ class trajectoryAnalysis():
                             and (data_vehicle_location.loc[j, 'lng_new'].round(decimals=2) == airport_location.loc[
                         i, 'longitude'].round(decimals=2)):
                         match_points_airport += 1
-            '''railway station'''
+                        break
+            # railway station
             match_points_railway = 0
             for i in range(railway_location.shape[0]):
                 for j in range(data_vehicle_location.index[0], data_vehicle_location.index[-1]):
@@ -167,25 +161,30 @@ class trajectoryAnalysis():
                             and (data_vehicle_location.loc[j, 'lng_new'].round(decimals=2) == railway_location.loc[
                         i, 'longitude'].round(decimals=2)):
                         match_points_railway += 1
+                        break
         elif radius==0.5:
+            # airport
             match_points_airport=0
             for i in range(airport_location.shape[0]):
                 for j in range(data_vehicle_location.index[0],data_vehicle_location.index[-1]):
-                    if ((data_vehicle_location.loc[j,'lat_new'].round(decimals=3)==airport_location.loc[i,'latitude'].round(decimals=3))\
-                        or (data_vehicle_location.loc[j,'lng_new'].round(decimals=3)==airport_location.loc[i,'longitude'].round(decimals=3)))\
-                        and ((data_vehicle_location.loc[j, 'lng_new'].round(decimals=3) + 0.004 == airport_location.loc[i, 'longitude'].round(decimals=3)) \
-                        or (data_vehicle_location.loc[j, 'lng_new'].round(decimals=3) - 0.004 == airport_location.loc[i, 'longitude'].round(decimals=3))):
+                    if ((data_vehicle_location.loc[j,'lat_new'].round(decimals=3)+0.004>=airport_location.loc[i,'latitude'].round(decimals=3))\
+                        and (data_vehicle_location.loc[j,'lng_new'].round(decimals=3)-0.004<=airport_location.loc[i,'latitude'].round(decimals=3)))\
+                        and ((data_vehicle_location.loc[j, 'lng_new'].round(decimals=3) + 0.004 >= airport_location.loc[i, 'longitude'].round(decimals=3)) \
+                        and (data_vehicle_location.loc[j, 'lng_new'].round(decimals=3) - 0.004 <= airport_location.loc[i, 'longitude'].round(decimals=3))):
                         match_points_airport+=1
-            '''railway station'''
+                        break
+            # railway station
             match_points_railway = 0
             for i in range(railway_location.shape[0]):
                 for j in range(data_vehicle_location.index[0],data_vehicle_location.index[-1]):
-                    if (((data_vehicle_location.loc[j, 'lat_new']).round(decimals=3)+0.004== railway_location.loc[i, 'latitude'].round(decimals=3))\
-                      or ((data_vehicle_location.loc[j, 'lat_new']).round(decimals=3)-0.004== railway_location.loc[i, 'latitude'].round(decimals=3))) \
-                      and ((data_vehicle_location.loc[j, 'lng_new'].round(decimals=3)+0.004 == railway_location.loc[i, 'longitude'].round(decimals=3))\
-                      or (data_vehicle_location.loc[j, 'lng_new'].round(decimals=3)-0.004 == railway_location.loc[i, 'longitude'].round(decimals=3))):
+                    if (((data_vehicle_location.loc[j, 'lat_new']).round(decimals=3)+0.004>= railway_location.loc[i, 'latitude'].round(decimals=3))\
+                      and ((data_vehicle_location.loc[j, 'lat_new']).round(decimals=3)-0.004<= railway_location.loc[i, 'latitude'].round(decimals=3))) \
+                      and ((data_vehicle_location.loc[j, 'lng_new'].round(decimals=3)+0.004 >= railway_location.loc[i, 'longitude'].round(decimals=3))\
+                      and (data_vehicle_location.loc[j, 'lng_new'].round(decimals=3)-0.004 <= railway_location.loc[i, 'longitude'].round(decimals=3))):
                         match_points_railway+=1
+                        break
         elif radius==0.1:
+             # airport
              match_points_airport = 0
              for i in range(airport_location.shape[0]):
                  for j in range(data_vehicle_location.index[0], data_vehicle_location.index[-1]):
@@ -194,7 +193,8 @@ class trajectoryAnalysis():
                              and (data_vehicle_location.loc[j, 'lng_new'].round(decimals=3) == airport_location.loc[
                          i, 'longitude'].round(decimals=3)):
                          match_points_airport += 1
-             '''railway station'''
+                         break
+             # railway station
              match_points_railway = 0
              for i in range(railway_location.shape[0]):
                  for j in range(data_vehicle_location.index[0], data_vehicle_location.index[-1]):
@@ -203,19 +203,16 @@ class trajectoryAnalysis():
                              and (data_vehicle_location.loc[j, 'lng_new'].round(decimals=3) == railway_location.loc[
                          i, 'longitude'].round(decimals=3)):
                          match_points_railway += 1
+                         break
         else:
             print('error')
-
         return match_points_airport,match_points_railway
 
     def POIAnalysis(self,radius):
         starttime = datetime.datetime.now()
         print('--------------POIAnalysis  Start-----------------')
-        # didi_list = os.listdir(str(self.didi_list))
-        # didi_list = os.listdir("F:\\sql data\\classifer_car_data\\example\\vehicle\\")
         for didi_id in range(len(self.didi_list)):
             print("Vehicle ID: {}".format(self.didi_list[didi_id]))
-            # data_vehicle = pd.read_csv('F:\\sql data\\classifer_car_data\\example\\vehicle\\' + self.didi_list[didi_id])
             data_vehicle = pd.read_csv(self.file_path + self.didi_list[didi_id])
             data_vehicle['datatime'] = pd.to_datetime(data_vehicle['datatime']).apply(lambda x: x.date())
             for day in days:
@@ -241,19 +238,55 @@ if __name__ == '__main__':
     # ------------------输入项--------------------
     # -------------根据数据属性选择输入项------------
     # 1-分析时间范围
-    days = ['2018-01-06', '2018-01-07','2018-01-08']
-    # 2-分析文件路径
-    file_path="F:\\sql data\\classifer_car_data\\example\\vehicle\\"
-    list_input = os.listdir(file_path)
-    # 3-分析结果保存路径
-    path = os.path.abspath(os.path.dirname(__file__))
-    type = sys.getfilesystemencoding()
-    sys.stdout =Logger('F:\\sql data\\classifer_car_data\\result-20201014.txt')
-    traAnalysis = trajectoryAnalysis(file_path,list_input)
+    days=['2019-09-01','2019-09-02','2019-09-03','2019-09-04','2019-09-05','2019-09-06','2019-09-07','2019-09-08',
+          '2019-09-09', '2019-09-10', '2019-09-11', '2019-09-12', '2019-09-13', '2019-09-14', '2019-09-15',
+          '2019-09-16','2019-09-17','2019-09-18','2019-09-19','2019-09-20','2019-09-21','2019-09-22','2019-09-23',
+          '2019-09-24', '2019-09-25', '2019-09-26', '2019-09-27', '2019-09-28', '2019-09-29', '2019-09-30']
+    # 2-分析文件路径（将待分析文件（20个csv文件）放入1个文件夹，共4个文件夹（一共80个csv文件））
+    file_paths="D:\\program\\data\\pecv\\",\
+               "D:\\program\\data\\pchev\\",\
+               "D:\\program\\data\\didi\\",\
+               "D:\\program\\data\\taxi\\"
+    file_suffixs=['pcev','pchev','didi','taxi']
+    n=0
+    '''POI 0.5km'''
+    for file_path in file_paths:
+        print(file_path)
+        list_input = os.listdir(file_path)
+        # 3-分析结果保存路径
+        path = os.path.abspath(os.path.dirname(__file__))
+        type = sys.getfilesystemencoding()
+        sys.stdout =Logger('D:\\result-20201014-0_5km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
+        sys.stdout =Logger('D:\\20201014-0_5km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
+        sys.stdout =Logger('D:\\result_1-20201014-0_5km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
+        sys.stdout =Logger('C:\\result_1-20201014-0_5km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
 
-    # ------------------选择项--------------------
-    # -------------根据分析需要选择功能------------
-    # 1-处理轨迹匹配POI,半径单位为km，默认0.5km
-    traAnalysis.POIAnalysis(0.5)
-    # 2-处理轨迹聚类，聚类半径单位为km，默认0.2km
-    traAnalysis.clusterAnalysis(0.2)
+        traAnalysis = trajectoryAnalysis(file_path,list_input)
+        # ------------------选择项--------------------
+        # -------------根据分析需要选择功能------------
+        # 1-处理轨迹匹配POI,半径单位为km(三个档位:0.1,0.5,1)，默认0.5km
+        traAnalysis.POIAnalysis(0.5)
+        # 2-处理轨迹聚类，聚类半径单位为km，默认0.5km
+        traAnalysis.clusterAnalysis(0.5)
+        n+=1
+
+    '''POI 1km'''
+    m = 0
+    for file_path in file_paths:
+        print(file_path)
+        list_input = os.listdir(file_path)
+        # 3-分析结果保存路径
+        path = os.path.abspath(os.path.dirname(__file__))
+        type = sys.getfilesystemencoding()
+        sys.stdout =Logger('D:\\result-20201014-1km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
+        sys.stdout =Logger('D:\\20201014-1km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
+        sys.stdout =Logger('D:\\result-20201014-1km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
+        sys.stdout =Logger('C:\\result-20201014-1km\\HJ\\result_{}'.format(file_suffixs[n])+'.txt')
+        traAnalysis = trajectoryAnalysis(file_path,list_input)
+        # ------------------选择项--------------------
+        # -------------根据分析需要选择功能------------
+        # 1-处理轨迹匹配POI,半径单位为km(三个档位:0.1,0.5,1)，默认0.5km
+        traAnalysis.POIAnalysis(1)
+        # 2-处理轨迹聚类，聚类半径单位为km，默认0.5km
+        traAnalysis.clusterAnalysis(0.5)
+        m+=1
