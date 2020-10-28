@@ -22,14 +22,14 @@ def sub_sets(a,b,idx):
 
 if __name__ == '__main__':
     '''BEV特征提取'''
-    BEV_daily_distance_mean = [0]  # 统计日均里程
-    BEV_daily_distance_std = [1]  # 统计日里程标准差
-    BEV_night_distance_mean = [2]  ##统计夜间日均里程
-    BEV_night_distance_percentage = [3]  # 统计夜间里程占比 0：00-5：00
-    BEV_am_peak_percentage = [4]  # 统计早高峰里程占比  7：00-9：00
-    BEV_pm_peak_percentage = [5]  # 统计晚高峰里程占比  17：00-19：00
-    BEV_weekends_distance_percentage = [6]  # 统计周末里程占比
-    BEV_charging_rate_mean = [7]  # 统计充电速率
+    BEV_daily_distance_mean = [0,0,0,0,0,0,0,0]  # 统计日均里程
+    BEV_daily_distance_std = [1,1,1,1,1,1,1,1]  # 统计日里程标准差
+    BEV_night_distance_mean = [2,2,2,2,2,2,2,2]  ##统计夜间日均里程
+    BEV_night_distance_percentage = [3,3,3,3,3,3,3,3]  # 统计夜间里程占比 0：00-5：00
+    BEV_am_peak_percentage = [4,4,4,4,4,4,4,4]  # 统计早高峰里程占比  7：00-9：00
+    BEV_pm_peak_percentage = [5,5,5,5,5,5,5,5]  # 统计晚高峰里程占比  17：00-19：00
+    BEV_weekends_distance_percentage = [6,6,6,6,6,6,6,6]  # 统计周末里程占比
+    BEV_charging_rate_mean = [7,7,7,7,7,7,7,7]  # 统计充电速率
 
     X = np.array([BEV_daily_distance_mean, \
                   BEV_daily_distance_std, \
