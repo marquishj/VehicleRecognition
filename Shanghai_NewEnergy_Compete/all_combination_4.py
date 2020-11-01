@@ -31,6 +31,7 @@ if __name__ == '__main__':
     BEV_weekends_distance_percentage = [6,6,6,6,6,6,6,6]  # 统计周末里程占比
     BEV_charging_rate_mean = [7,7,7,7,7,7,7,7]  # 统计充电速率
 
+
     X = np.array([BEV_daily_distance_mean, \
                   BEV_daily_distance_std, \
                   BEV_night_distance_mean, \
